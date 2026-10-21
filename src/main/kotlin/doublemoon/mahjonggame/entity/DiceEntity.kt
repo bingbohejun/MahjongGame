@@ -1,0 +1,151 @@
+package doublemoon.mahjonggame.entity
+
+import doublemoon.mahjonggame.registry.EntityTypeRegistry
+import doublemoon.mahjonggame.registry.ItemRegistry
+import net.minecraft.entity.EntityType
+import net.minecraft.entity.MovementType
+import net.minecraft.entity.data.DataTracker
+import net.minecraft.entity.data.TrackedData
+import net.minecraft.entity.data.TrackedDataHandlerRegistry
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.registry.tag.FluidTags
+import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.sound.SoundEvents
+import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Vec3d
+import net.minecraft.world.World
+import kotlin.math.min
+
+/**
+ * 骰子实体
+ * */
+class DiceEntity(
+    type: EntityType<DiceEntity> = EntityTypeRegistry.dice,
+    world: World,
+    pos: Vec3d? = null,
+    yaw: Float? = null,
+) : GameEntity(type, world) {
+
+    /**
+     * 骰子当前的点数 (与摆的方向有关)
+     * */
+    var point: DicePoint
+        set(value) = dataTracker.set(POINT, value.name)
+        get() = DicePoint.valueOf(dataTracker[POINT])
+
+    val rolling: Boolean
+        get() = !isOnGround
+
+    init {
+        pos?.let { setPosition(it.x, it.y, it.z) }
+        yaw?.let { setRotation(it, 0f) }
+    }
+
+    override fun interact(player: PlayerEntity, hand: Hand): ActionResult {
+        if (!player.world.isClient) {
+            player as ServerPlayerEntity
+            if (!isSpawnedByGame && player.isSneaking) { //不是由游戏产生, 是手动放置的一般实体
+                //蹲下才能把骰子捡起来
+                player.giveItemStack(ItemRegistry.dice.defaultStack)
+                playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1f, 1f)
+                remove(RemovalReason.DISCARDED)
+            }
+        }
+        return ActionResult.SUCCESS
+    }
+
+    override fun tick() {
+        super.tick()
+        prevX = x
+        prevY = y
+        prevZ = z
+        if (isSubmergedIn(FluidTags.WATER)) {
+            setUnderwaterMovement()
+        } else if (!this.hasNoGravity()) {
+            velocity = velocity.add(0.0, -0.03, 0.0)
+        }
+        if (world.getFluidState(blockPos).isIn(FluidTags.LAVA)) {
+            setVelocity(
+                random.nextDouble() - random.nextDouble() * 0.2,
+                0.2,
+                random.nextDouble() - random.nextDouble() * 0.2
+            )
+            playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f, 2.0f + random.nextFloat() * 0.4f)
+        }
+        if (!world.isSpaceEmpty(boundingBox)) {
+            pushOutOfBlocks(x, (boundingBox.minY + boundingBox.maxY) / 2.0, z)
+        }
+        move(MovementType.SELF, velocity)
+        var f = 0.98f
+        if (isOnGround) {
+            val pos = BlockPos(x.toInt(), (y - 1.0).toInt(), z.toInt())
+            f = world.getBlockState(pos).block.slipperiness * 0.98f
+        }
+        velocity = velocity.multiply(f.toDouble(), 0.98, f.toDouble())
+        if (isOnGround) {
+            velocity = velocity.multiply(1.0, -0.9, 1.0)
+        }
+        ++age
+        if (rolling) { //骰子在滚动
+            point = DicePoint.random()
+        }
+    }
+
+    private fun setUnderwaterMovement() {
+        val vec3d = velocity
+        setVelocity(
+            vec3d.x * 0.99,
+            min(vec3d.y + 5.0E-4, 0.06),
+            vec3d.z * 0.99
+        )
+    }
+
+    override fun initDataTracker(builder: DataTracker.Builder) {
+        super.initDataTracker(builder)
+        builder.add(POINT, DicePoint.random().name)
+    }
+
+    override fun readCustomDataFromNbt(nbt: NbtCompound) {
+        super.readCustomDataFromNbt(nbt)
+        val pointStr = nbt.get("Point")?.asString() ?: DicePoint.random().name //避免指令召唤的骰子没有 nbt 导致无法召唤
+        point = DicePoint.valueOf(pointStr)
+    }
+
+    override fun writeCustomDataToNbt(nbt: NbtCompound) {
+        super.writeCustomDataToNbt(nbt)
+        nbt.putString("Point", point.name)
+    }
+
+    companion object {
+        //麻将牌的宽高深和比例
+        const val DICE_SCALE = 0.2f
+        const val DICE_WIDTH = 1f / 16 * 10 * DICE_SCALE
+        const val DICE_HEIGHT = 1f / 16 * 10 * DICE_SCALE
+
+        val POINT: TrackedData<String> =
+            DataTracker.registerData(DiceEntity::class.java, TrackedDataHandlerRegistry.STRING)
+    }
+}
+
+enum class DicePoint(
+    val xpRotDegrees: Float,
+    val ypRotDegrees: Float,
+    val value: Int,
+) {
+    ONE(0f, 0f, 1),
+    TWO(90f, 0f, 2),
+    THREE(90f, 90f, 3),
+    FOUR(-90f, 0f, 4),
+    FIVE(90f, -90f, 5),
+    SIX(-180f, 0f, 6);
+
+    val next: DicePoint
+        get() = entries[(this.ordinal + 1) % entries.size]
+
+    companion object {
+        fun random(): DicePoint = entries[(0..entries.toTypedArray().lastIndex).random()]
+    }
+}

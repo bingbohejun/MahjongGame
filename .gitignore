@@ -1,0 +1,27 @@
+# Gradle / 构建产物
+.gradle/
+build/
+.kotlin/
+run/
+
+# 本地依赖 jar（编译期需要的 CialloLib dev jar 需手动放进 libs/，不要提交二进制）
+libs/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+
+# 日志
+logs/
+*.log
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 临时/本地
+*.tmp
+*.bak

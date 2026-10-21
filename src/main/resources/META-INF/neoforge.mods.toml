@@ -1,0 +1,50 @@
+# NeoForge 1.21.1 port of MahjongCraft (originally Fabric 1.20.6)
+modLoader = "kotlinforforge"
+loaderVersion = "[5,)"
+license = "MIT"
+
+[[mods]]
+modId = "mahjonggame"
+version = "${version}"
+displayName = "MahjongGame"
+description = '''
+Play Japanese(Riichi) Mahjong with your friends.
+'''
+authors = "bingbohejun"
+logoFile = "assets/mahjonggame/icon.png"
+
+[[dependencies.mahjonggame]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mahjonggame]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mahjonggame]]
+modId = "kotlinforforge"
+type = "required"
+versionRange = "[5,)"
+ordering = "NONE"
+side = "BOTH"
+
+# GUI 函式庫, 由原本內嵌改為獨立模組
+[[dependencies.mahjonggame]]
+modId = "ciallolib"
+type = "required"
+versionRange = "[1.0.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mahjonggame]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[15,)"
+ordering = "NONE"
+side = "BOTH"

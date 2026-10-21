@@ -1,0 +1,8 @@
+# 统一文本行尾为 LF，保证跨平台（Windows/macOS/Linux）一致
+* text=auto eol=lf
+
+# 二进制文件不要做行尾转换
+*.jar binary
+*.png binary
+*.ogg binary
+*.wav binary

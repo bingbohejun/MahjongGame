@@ -64,11 +64,11 @@
 
 ### 按键
 
-| 按键           | 功能                           |
-| ------------ | ---------------------------- |
-| `;`（分号）      | 打开配置界面                       |
-| 开启 HUD 位置编辑器 | 调整 HUD 在屏幕上的位置（需在设置 → 按键里绑定） |
-| 开启役种画面       | 打开役种总览（需在设置 → 按键里绑定）         |
+| 按键                           | 功能                                                         |
+| ---------------------------- | ---------------------------------------------------------- |
+| `;`（分号）                      | 打开配置界面                                                     |
+| 开启 HUD 位置编辑器                 | 调整 HUD 在屏幕上的位置（需在设置 → 按键里绑定）                               |
+| 开启役种画面                       | 打开役种总览（需在设置 → 按键里绑定）                                       |
 | 切换 自动理牌 / 自动和牌 / 不吃碰杠 / 自动摸切 | 对局中直接切换左侧快捷操作 HUD 的四个开关（需在设置 → 按键里绑定，默认未绑定；切换后聊天栏会提示开 / 关） |
 
 配置界面也可从 **Mods 菜单 → MahjongGame → Config** 进入。
@@ -132,6 +132,6 @@ cp ../CialloLib/build/devlibs/ciallolib-mc1.21.1-*-dev.jar libs/
 ## 致谢与许可
 
 - 本模组基于 NeoForge 1.21.1 + Kotlin for Forge 5.12.0 开发。
-- GUI 部分依赖 **CialloLib**，其代码 fork 自 [CottonMC/LibGui](https://github.com/CottonMC/LibGui)（MIT, © The Cotton Project）并修改来适应mod。
+- GUI 部分依赖 **CialloLib**，其代码 fork 自 [CottonMC/LibGui](https://github.com/CottonMC/LibGui)  10.0.0版本（MIT, © The Cotton Project）并修改来适应mod。
 - 牌型拆解使用 [mahjong4j](https://github.com/mahjong4j/mahjong4j)（Apache-2.0）。
 - 整体以 **MIT** 许可发布。

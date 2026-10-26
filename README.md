@@ -57,7 +57,12 @@
 配置界面也可从 **Mods 菜单 → MahjongGame → Config** 进入。
 
 ---
+ ## 致谢与许可
 
+- 本模组基于 NeoForge 1.21.1 + Kotlin for Forge 5.12.0 开发。
+- GUI 部分依赖 **CialloLib**，其代码 fork 自 [CottonMC/LibGui](https://github.com/CottonMC/LibGui)  10.0.0版本（MIT, © The Cotton Project）并修改来适应mod。
+- 牌型拆解使用 [mahjong4j](https://github.com/mahjong4j/mahjong4j)（Apache-2.0）。
+- 整体以 **GPL-2.0** 许可发布。
 
 ## 构建（开发用）
 
@@ -70,11 +75,5 @@ cp ../CialloLib/build/devlibs/ciallolib-mc1.21.1-*-dev.jar libs/
 ./gradlew build
 ./gradlew runClient   # 开发环境启动客户端（需把 CialloLib 的 dev jar 放进 run/mods/）
 ./gradlew runServer   # 开发环境启动专用服务器
----
 
-## 致谢与许可
 
-- 本模组基于 NeoForge 1.21.1 + Kotlin for Forge 5.12.0 开发。
-- GUI 部分依赖 **CialloLib**，其代码 fork 自 [CottonMC/LibGui](https://github.com/CottonMC/LibGui)  10.0.0版本（MIT, © The Cotton Project）并修改来适应mod。
-- 牌型拆解使用 [mahjong4j](https://github.com/mahjong4j/mahjong4j)（Apache-2.0）。
-- 整体以 **GPL-2.0** 许可发布。

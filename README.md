@@ -6,7 +6,7 @@
 
 - 运行环境：**Minecraft 1.21.1 + NeoForge 21.1.127+**
 - 模组 ID：`mahjonggame`，显示名 `MahjongGame`
-- 许可：MIT
+- 许可：GPL2.0
 
 ---
 

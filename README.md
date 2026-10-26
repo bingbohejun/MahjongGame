@@ -3,11 +3,6 @@
 在 Minecraft 里和朋友联机打麻将的 NeoForge 模组，由 bingbohejun（作者）开发维护。
 支持**日本立直麻将（四人 / 三人）**与**四川麻将（血战到底）**三种玩法，内置电脑机器人，
 完整实现了宝牌、役种、符番计算、流局判定等日麻规则，四川麻将则有独立的番型计分。
-
-- 运行环境：**Minecraft 1.21.1 + NeoForge 21.1.127+**
-- 模组 ID：`mahjonggame`，显示名 `MahjongGame`
-- 许可：GPL2.0
-
 ---
 
 ## 支持的玩法
@@ -26,18 +21,6 @@
 
 ---
 
-## 特性
-
-- **电脑机器人**：可加入「电脑」玩家（【电脑】一 / 【电脑】二 …），外观为默认史蒂夫模型、头像统一为史蒂夫脸。
-- **完整役种系统**：内置役种总览界面，可随时查看每个役的条件与说明。
-- **快捷操作 HUD**（对局中屏幕左侧）：自动理牌 / 自动和牌 / 不吃碰杠 / 自动摸切。
-  其中自动和牌、不吃碰杠、自动摸切会在每回合结束时自动重置。
-- **牌提示 HUD**：显示当前牌河 / 听牌等提示信息。
-- **桌面中央面板**：实时显示场风、剩余牌数、各家点数与风牌（庄家红底）。
-- **麻将指南**（物品）：打开役种总览画面。
-
----
-
 ## 环境要求与依赖
 
 必须同时安装以下 4 个模组（全部放进 `mods/`）：
@@ -45,9 +28,9 @@
 | 文件                                            | 说明                                                                |
 | --------------------------------------------- | ----------------------------------------------------------------- |
 | `MahjongGame-mc1.21.1-<版本>+1.21.1.jar`        | 本体（已内嵌 [mahjong4j](https://github.com/mahjong4j/mahjong4j) 0.3.2） |
-| `ciallolib-mc1.21.1-1.0.0+1.21.1.jar`         | **GUI 函式库**（本模组的必需依赖，原内嵌 ， 已抽出为独立模组，内嵌 LibNinepatch + Jankson）    |
+| `ciallolib-mc1.21.1-1.0.0+1.21.1.jar`         | **GUI 函式库**（本模组的必需依赖）                                         |
 | `kotlinforforge-neoforge-5.12.0.jar`          | Kotlin 运行时（必需前置）                                                  |
-| `cloth-config-neoforge-15.0.140-neoforge.jar` | 配置界面（必需前置）                                                        |
+| `cloth-config-neoforge-15.0.140-neoforge.jar` | 配置界面（必需前置）                                                       |
 
 客户端与服务端都要装这 4 个。需要 **Minecraft 1.21.1 + NeoForge 21.1.127+**。
 
@@ -75,32 +58,6 @@
 
 ---
 
-## 配置项（Cloth Config）
-
-- **显示麻将桌的标签**：是否在麻将桌方块上显示游戏相关标签。
-- **麻将牌提示**：牌提示 HUD 的显示开关与位置 / 背景色。
-- **快速操作**：左侧快捷操作 HUD 的显示开关、位置 / 背景色，以及四个开关：
-  - 自动理牌（默认开）
-  - 自动和牌（每回合自动重置）
-  - 不吃碰杠（每回合自动重置）
-  - 自动摸切（每回合自动重置）
-
-> 左侧快捷操作 HUD 是「显示 + 配置切换」形态：在配置界面里开关，对局中看红 / 绿状态；
-> 也能在对局里直接按绑定好的快捷键切换（见上表「按键」），切换后会即时在聊天栏提示开 / 关。
-
----
-
-## 合成表
-
-| 成品      | 配方         | 材料                           |
-| ------- | ---------- | ---------------------------- |
-| 麻将桌     | 3×3 工作台    | 3 任意青 / 绿色地毯 + 1 木栅栏 + 1 木台阶 |
-| 麻将凳     | 2×2（物品栏即可） | 2 灰色地毯 + 2 木棍                |
-| 麻将牌 ×16 | 3×3 工作台    | 6 白色混凝土 + 2 青色混凝土            |
-| 麻将点棒 ×6 | 3×3 工作台    | 3 白色混凝土 + 1 染料（红 / 黑）        |
-| 骰子 ×2   | 无序         | 白色混凝土 + 红染料 + 黑染料            |
-
----
 
 ## 构建（开发用）
 
@@ -113,20 +70,6 @@ cp ../CialloLib/build/devlibs/ciallolib-mc1.21.1-*-dev.jar libs/
 ./gradlew build
 ./gradlew runClient   # 开发环境启动客户端（需把 CialloLib 的 dev jar 放进 run/mods/）
 ./gradlew runServer   # 开发环境启动专用服务器
-```
-
-工具链：Architectury Loom 1.9 + Yarn 1.21.1+build.3（叠加 yarn-mappings-patch-neoforge 1.21+build.4）
-
-+ Kotlin 2.4.0 + Java 21。
-
-### 要点
-
-- **注册表冻结**：所有注册对象改用 `DeferredRegister` 惰性创建（`register(name, Supplier { … })`）。
-- **Mixin 兼容级别**：`mixins.libgui.json` 需 `"compatibilityLevel": "JAVA_21"`。
-- **Gui 渲染 API**：`Tessellator.getBuffer()` 与 `BufferBuilder.begin(...)` 合并为 `Tessellator.begin(...)`；
-  `Identifier` 构造器私有化，改用 `Identifier.of(...)`。
-- **依赖隔离**：`mahjong4j` 的 POM 误依赖 `maven-gpg-plugin`，已在依赖声明层 exclude，避免与 NeoForge 工具链冲突。
-
 ---
 
 ## 致谢与许可
@@ -134,4 +77,4 @@ cp ../CialloLib/build/devlibs/ciallolib-mc1.21.1-*-dev.jar libs/
 - 本模组基于 NeoForge 1.21.1 + Kotlin for Forge 5.12.0 开发。
 - GUI 部分依赖 **CialloLib**，其代码 fork 自 [CottonMC/LibGui](https://github.com/CottonMC/LibGui)  10.0.0版本（MIT, © The Cotton Project）并修改来适应mod。
 - 牌型拆解使用 [mahjong4j](https://github.com/mahjong4j/mahjong4j)（Apache-2.0）。
-- 整体以 **MIT** 许可发布。
+- 整体以 **GPL-2.0** 许可发布。
